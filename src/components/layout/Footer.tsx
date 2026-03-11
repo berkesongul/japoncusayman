@@ -2,28 +2,34 @@ import Link from "next/link";
 
 export function Footer() {
     return (
-        <footer className="w-full border-t bg-background py-6 md:py-12 mt-12">
-            <div className="container flex flex-col items-center justify-between gap-4 md:flex-row">
-                <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
-                    <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-                        Built by <span className="font-semibold text-foreground">Japoncu Sayman</span>.
-                        {" "}The standard for high-quality automotive spare parts.
-                    </p>
-                </div>
-                <div className="flex items-center space-x-4">
-                    <Link
-                        href="/iletisim"
-                        className="text-sm font-medium text-muted-foreground hover:text-foreground"
+        <footer className="w-full border-t bg-background py-6 mt-12">
+            <div className="container flex flex-col items-center justify-between gap-4 md:flex-row md:gap-0 text-sm text-muted-foreground">
+                {/* Sol: Copyright */}
+                <p className="text-center md:text-left pl-32">
+                    © {new Date().getFullYear()} Japoncu Sayman. Tüm hakları saklıdır.
+                </p>
+
+                {/* Orta: Nav */}
+                <nav className="flex items-center gap-6">
+                    <Link href="/" className="hover:text-foreground transition-colors">Ana Sayfa</Link>
+                    <Link href="/kurumsal" className="hover:text-foreground transition-colors">Kurumsal</Link>
+                    <Link href="/products" className="hover:text-foreground transition-colors">Yedek Parça</Link>
+                    <Link href="/#brands" className="hover:text-foreground transition-colors">Markalar</Link>
+                    <Link href="/iletisim" className="hover:text-foreground transition-colors">İletişim</Link>
+                </nav>
+
+                {/* Sağ: Developer */}
+                <p className="text-center md:text-right">
+                    Developed by{" "}
+                    <a
+                        href="https://instagram.com/berkesongul97"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-foreground hover:underline"
                     >
-                        İletişim
-                    </Link>
-                    <Link
-                        href="/hakkimizda"
-                        className="text-sm font-medium text-muted-foreground hover:text-foreground"
-                    >
-                        Hakkımızda
-                    </Link>
-                </div>
+                        berkesongul
+                    </a>
+                </p>
             </div>
         </footer>
     );

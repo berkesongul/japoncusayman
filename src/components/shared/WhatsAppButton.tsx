@@ -14,7 +14,7 @@ interface WhatsAppButtonProps {
 export function WhatsAppButton({
     productName,
     oemCode,
-    phoneNumber = "+905555555555", // TODO: Replace with actual company WhatsApp number
+    phoneNumber = "+905427401745", // TODO: Replace with actual company WhatsApp number
     className = "",
     fullWidth = false,
 }: WhatsAppButtonProps) {
@@ -32,7 +32,7 @@ export function WhatsAppButton({
             className={`bg-green-600 hover:bg-green-700 text-white shadow-md gap-2 ${fullWidth ? "w-full" : ""} ${className}`}
         >
             <MessageCircle className="h-4 w-4" />
-            WhatsApp'tan Sor
+            Whatsapp ile Sor
         </Button>
     );
 }

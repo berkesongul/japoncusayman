@@ -75,3 +75,25 @@ model Product {
   @@index([oemCode])
   @@index([slug])
 }
+
+model Settings {
+  id            String   @id @default("site-settings")
+  address       String?
+  phone         String?
+  email         String?
+  workingHours  String?
+  whatsapp      String?
+  googleMapsUrl String?
+  updatedAt     DateTime @updatedAt
+}
+
+model InternalStock {
+  id          String   @id @default(cuid())
+  name        String
+  oemCode     String?
+  quantity    Int      @default(0)
+  location    String?  // e.g., "Raf A-1"
+  notes       String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

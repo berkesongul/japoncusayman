@@ -9,11 +9,11 @@ interface ProductCardProps {
         name: string;
         slug: string;
         oemCode: string;
-        description?: string;
-        price?: number;
-        imageUrl?: string;
-        brand?: { name: string };
-        model?: { name: string };
+        description?: string | null;
+        price?: number | null;
+        imageUrl?: string | null;
+        brand?: { name: string } | null;
+        model?: { name: string } | null;
     };
 }
 
@@ -24,13 +24,20 @@ export function ProductCard({ product }: ProductCardProps) {
     return (
         <Card className="group overflow-hidden flex flex-col transition-all hover:shadow-lg hover:border-primary/50 bg-card rounded-xl">
             <Link href={`/products/${product.slug}`} className="block relative overflow-hidden bg-muted aspect-square">
-                {/* We will need to set up domains in next config if fetching from s3, test with local placeholder */}
-                <div className="absolute inset-0 flex items-center justify-center p-6 transition-transform duration-300 group-hover:scale-105">
-                    {/* Ensure Nextjs Image has an alt text and layout fill for responsive square ratio */}
-                    <div className="relative w-full h-full bg-slate-200 animate-pulse rounded-md flex items-center justify-center overflow-hidden">
-                        {/* Replace with actual next/image later when we have real domains or local files */}
-                        <span className="text-muted-foreground font-medium text-sm">Resim Yok</span>
-                    </div>
+                <div className="absolute inset-0 transition-transform duration-300 group-hover:scale-105">
+                    {product.imageUrl ? (
+                        <Image
+                            src={product.imageUrl}
+                            alt={product.name}
+                            fill
+                            className="object-contain p-4"
+                            sizes="(max-width: 768px) 50vw, 25vw"
+                        />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">
+                            Görsel Yok
+                        </div>
+                    )}
                 </div>
             </Link>
 

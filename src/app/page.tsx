@@ -1,65 +1,327 @@
+import Link from "next/link";
 import Image from "next/image";
+import { ArrowRight, CheckCircle2, ShieldCheck, Truck, MapPin, Phone, Mail, Clock, MessageCircle, Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ProductCard } from "@/components/shared/ProductCard";
+import { prisma } from "@/lib/prisma";
 
-export default function Home() {
+export default async function Home() {
+  // Fetch latest products and brands concurrently
+  const [latestProducts, featuredBrands, settings] = await Promise.all([
+    prisma.product.findMany({
+      take: 8,
+      orderBy: { createdAt: "desc" },
+      include: { brand: true, model: true },
+    }),
+    prisma.brand.findMany({
+      take: 6,
+      orderBy: { name: "asc" },
+    }),
+    (prisma as any).settings.findUnique({
+      where: { id: "site-settings" },
+    }),
+  ]);
+
+  const defaultSettings = {
+    address: "Örnek Mahallesi, Oto Sanayi Sitesi No: 42, Bağcılar / İstanbul",
+    phone: "+90 5XX XXX XX XX",
+    email: "info@japoncusayman.com",
+    workingHours: "Pzt – Cmt: 08:00 – 19:00\nPazar: Kapalı",
+    whatsapp: "905XXXXXXXXX",
+    googleMapsUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3009.6!2d28.855!3d41.068!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDHCsDA0JzA0LjgiTiAyOMKwNTEnMTguMCJF!5e0!3m2!1str!2str!4v1234567890",
+  };
+
+  const contactInfo = {
+    address: settings?.address || defaultSettings.address,
+    phone: settings?.phone || defaultSettings.phone,
+    email: settings?.email || defaultSettings.email,
+    workingHours: settings?.workingHours || defaultSettings.workingHours,
+    whatsapp: settings?.whatsapp || defaultSettings.whatsapp,
+    googleMapsUrl: settings?.googleMapsUrl || defaultSettings.googleMapsUrl,
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="flex flex-col gap-16 pb-16">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden pt-16 pb-32 lg:pt-32 lg:pb-48 text-white">
+        {/* Background image */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/images/main-page/banner/slide1.png"
+            alt="Banner"
+            fill
+            className="object-cover"
+            priority
+          />
+          {/* 0.3 opacity dark overlay */}
+          <div className="absolute inset-0 bg-slate-900/70" />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+
+        {/* Decorative glow */}
+        <div className="absolute top-0 right-0 -mr-32 -mt-32 w-96 h-96 rounded-full bg-primary/20 blur-3xl shadow-2xl opacity-40 z-0" />
+
+        <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+            {/* Left Content */}
+            <div className="lg:w-1/2 space-y-8 animate-fade-in-up">
+              <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight text-white leading-tight animate-fade-in-up delay-100 [text-shadow:0_2px_16px_rgba(0,0,0,0.7)]">
+                Aracınız İçin <br />
+                <span className="text-white">
+                  En Kaliteli Parçalar
+                </span>
+              </h1>
+              <p className="text-lg md:text-xl text-slate-200 max-w-2xl leading-relaxed animate-fade-in-up delay-200 [text-shadow:0_1px_8px_rgba(0,0,0,0.6)]">
+                Japoncu Sayman, tüm Uzakdoğu marka araçlar için orijinal ve yüksek kaliteli yan sanayi yedek parçaları en uygun fiyatlarla sunar.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 pt-4 animate-fade-in-up delay-300">
+                <Button size="lg" className="text-lg font-medium px-8" asChild>
+                  <Link href="/products">Parça Ara</Link>
+                </Button>
+                <Button size="lg" variant="outline" className="text-lg font-medium bg-transparent text-white border-white/30 hover:bg-white/10 px-8" asChild>
+                  <Link href="/#brands">Markalar</Link>
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-12 mt-8 border-t border-white/10">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary/20 p-2 rounded-lg">
+                    <ShieldCheck className="h-6 w-6 text-red-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-white">Güvenilir Ürün</h4>
+                    <p className="text-sm text-slate-400">Garantili parçalar</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary/20 p-2 rounded-lg">
+                    <Truck className="h-6 w-6 text-red-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-white">Hızlı Gönderim</h4>
+                    <p className="text-sm text-slate-400">Aynı gün kargo imkanı</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary/20 p-2 rounded-lg">
+                    <CheckCircle2 className="h-6 w-6 text-red-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-white">Geniş Stok</h4>
+                    <p className="text-sm text-slate-400">Tüm Japon markaları</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Side: Search Box */}
+            <div className="lg:w-1/2 w-full animate-fade-in delay-500">
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-8 shadow-2xl">
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-bold">Ürün Ara</h3>
+                    <p className="text-slate-300 text-sm">Parça adı, marka veya OEM kodu ile hızlıca bulun.</p>
+                  </div>
+
+                  <form action="/products" method="GET" className="space-y-4">
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="q"
+                        placeholder="Örn: Toyota Corolla Balata"
+                        className="w-full bg-white/10 border border-white/20 rounded-xl py-4 px-12 text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                      />
+                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                    </div>
+                    <Button type="submit" size="lg" className="w-full text-lg h-14">
+                      Hemen Bul
+                    </Button>
+                  </form>
+
+                  <div className="pt-4 space-y-3">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Popüler Aramalar</p>
+                    <div className="flex flex-wrap gap-2">
+                      {['Fren Balatası', 'Yağ Filtresi', 'Amortisör', 'Hava Filtresi'].map((tag) => (
+                        <Link
+                          key={tag}
+                          href={`/products?q=${tag}`}
+                          className="text-xs bg-white/5 hover:bg-white/20 border border-white/10 px-3 py-1.5 rounded-full transition-colors"
+                        >
+                          {tag}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Brands */}
+      <section id="brands" className="container mx-auto px-4 max-w-7xl">
+        <div className="flex items-center justify-between mb-8">
+          <div className="space-y-1">
+            <h2 className="text-3xl font-bold tracking-tight">Öne Çıkan Markalar</h2>
+            <p className="text-muted-foreground">Aradığınız modele uygun parçaları marka seçerek bulun.</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-6">
+          {featuredBrands.map((brand) => (
+            <Link
+              key={brand.id}
+              href={`/products?brand=${brand.slug}`}
+              className="group flex flex-col items-center justify-center p-6 bg-card border rounded-2xl transition-all hover:border-primary hover:shadow-lg hover:-translate-y-1"
+            >
+              <div className="w-full h-24 relative flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110">
+                {brand.imageUrl ? (
+                  <Image
+                    src={brand.imageUrl}
+                    alt={brand.name}
+                    fill
+                    className="object-contain p-2"
+                    sizes="(max-width: 768px) 50vw, 15vw"
+                  />
+                ) : (
+                  <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center text-2xl font-bold text-muted-foreground">
+                    {brand.name.charAt(0)}
+                  </div>
+                )}
+              </div>
+              <h3 className="font-semibold text-center">{brand.name}</h3>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Latest Products */}
+      <section className="container mx-auto px-4 max-w-7xl">
+        <div className="flex items-center justify-between mb-8">
+          <div className="space-y-1">
+            <h2 className="text-3xl font-bold tracking-tight">Yeni Eklenen Parçalar</h2>
+            <p className="text-muted-foreground">En yeni stoklarımızdan seçmeler.</p>
+          </div>
+          <Button variant="ghost" className="gap-2 hidden md:flex" asChild>
+            <Link href="/products">
+              Tümünü Gör
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {latestProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+
+        <div className="flex justify-center mt-10 md:hidden">
+          <Button variant="outline" className="w-full sm:w-auto" asChild>
+            <Link href="/products">
+              Tüm Ürünleri Gör
+            </Link>
+          </Button>
+        </div>
+      </section>
+
+      {/* Kurumsal Section */}
+      <section className="bg-slate-50 py-20 border-y border-slate-100">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold tracking-tight text-slate-900">Japoncu Sayman Kimdir?</h2>
+              <p className="text-slate-600 leading-relaxed">
+                1980'li yıllarda temelleri atılan <strong>Japoncu Sayman</strong>, otomotiv yedek parça sektöründe dürüstlük ve kalite prensipleriyle yoluna devam etmektedir. Özellikle Japon ve Kore menşeli araçların yedek parça tedariğinde uzmanlaşmış kadromuzla, Türkiye'nin her noktasına hizmet sunmaktayız.
+              </p>
+              <Button asChild variant="outline">
+                <Link href="/kurumsal">Daha Fazla Bilgi</Link>
+              </Button>
+            </div>
+            <div className="relative aspect-video rounded-3xl overflow-hidden shadow-xl">
+              <Image
+                src="/images/main-page/banner/slide1.png"
+                alt="Kurumsal"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="iletisim" className="container mx-auto px-4 max-w-5xl">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-bold tracking-tight mb-2">İletişim</h2>
+          <p className="text-muted-foreground">Sormak istediğiniz her şey için bize ulaşın.</p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          {/* Left: Contact Cards */}
+          <div className="space-y-4">
+            <div className="flex items-start gap-4 p-5 rounded-2xl border bg-card">
+              <div className="bg-primary/10 p-3 rounded-xl shrink-0">
+                <MapPin className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold mb-1">Adres</h3>
+                <p className="text-muted-foreground text-sm">{contactInfo.address}</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-5 rounded-2xl border bg-card">
+              <div className="bg-primary/10 p-3 rounded-xl shrink-0">
+                <Phone className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold mb-1">Telefon</h3>
+                <a href={`tel:${contactInfo.phone.replace(/\s+/g, "")}`} className="text-muted-foreground text-sm hover:text-primary transition-colors">{contactInfo.phone}</a>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-5 rounded-2xl border bg-card">
+              <div className="bg-primary/10 p-3 rounded-xl shrink-0">
+                <Mail className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold mb-1">E-posta</h3>
+                <a href={`mailto:${contactInfo.email}`} className="text-muted-foreground text-sm hover:text-primary transition-colors">{contactInfo.email}</a>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-5 rounded-2xl border bg-card">
+              <div className="bg-primary/10 p-3 rounded-xl shrink-0">
+                <Clock className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold mb-1">Çalışma Saatleri</h3>
+                <p className="text-muted-foreground text-sm whitespace-pre-line">{contactInfo.workingHours}</p>
+              </div>
+            </div>
+            <a
+              href={`https://wa.me/${contactInfo.whatsapp.replace(/\+/g, "").replace(/\s+/g, "")}?text=Merhaba%2C%20bilgi%20almak%20istiyorum.`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-3 w-full rounded-xl bg-green-500 hover:bg-green-600 text-white font-semibold py-4 transition-colors"
+            >
+              <MessageCircle className="h-5 w-5" />
+              WhatsApp ile Yazın
+            </a>
+          </div>
+
+          {/* Right: Map */}
+          <div className="rounded-2xl overflow-hidden border bg-muted min-h-[320px]">
+            <iframe
+              src={contactInfo.googleMapsUrl}
+              width="100%"
+              height="100%"
+              style={{ border: 0, minHeight: 320 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Japoncu Sayman Konum"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
         </div>
-      </main>
+      </section>
     </div>
   );
 }

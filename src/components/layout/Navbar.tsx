@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Search } from "lucide-react";
+import Image from "next/image";
+import { Search, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function Navbar() {
@@ -7,11 +8,15 @@ export function Navbar() {
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container flex h-16 items-center justify-between">
                 <div className="flex items-center gap-6 md:gap-10">
-                    <Link href="/" className="flex items-center space-x-2">
-                        {/* Replace with actual logo or styled text */}
-                        <span className="inline-block font-bold text-xl text-primary">
-                            Japoncu Sayman
-                        </span>
+                    <Link href="/" className="flex items-center">
+                        <Image
+                            src="/images/japoncu-sayman-logo.svg"
+                            alt="Japoncu Sayman"
+                            width={220}
+                            height={56}
+                            priority
+                            className="h-14 w-auto"
+                        />
                     </Link>
                     <nav className="hidden md:flex gap-6">
                         <Link
@@ -19,6 +24,12 @@ export function Navbar() {
                             className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                         >
                             Ana Sayfa
+                        </Link>
+                        <Link
+                            href="/kurumsal"
+                            className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                        >
+                            Kurumsal
                         </Link>
                         <Link
                             href="/products"
@@ -32,10 +43,16 @@ export function Navbar() {
                         >
                             Markalar
                         </Link>
+                        <Link
+                            href="/iletisim"
+                            className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                        >
+                            İletişim
+                        </Link>
                     </nav>
                 </div>
 
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
                     <div className="hidden lg:flex w-full max-w-sm items-center space-x-2">
                         <div className="relative">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -47,6 +64,14 @@ export function Navbar() {
                         </div>
                         <Button size="sm">Ara</Button>
                     </div>
+
+                    <Link
+                        href="/admin/login"
+                        className="inline-flex items-center justify-center w-9 h-9 rounded-md border border-input bg-background hover:bg-muted transition-colors"
+                        title="Yönetici Girişi"
+                    >
+                        <UserCircle className="h-5 w-5 text-muted-foreground" />
+                    </Link>
                 </div>
             </div>
         </header>
