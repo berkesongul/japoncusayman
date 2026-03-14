@@ -27,6 +27,8 @@ export const metadata: Metadata = {
 };
 
 import { AuthProvider } from "@/components/providers/AuthProvider";
+import { WhatsAppWidget } from "@/components/layout/WhatsAppWidget";
+import { ProductSearchWidget } from "@/components/layout/ProductSearchWidget";
 
 export default function RootLayout({
   children,
@@ -44,6 +46,8 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <WhatsAppWidget />
+          <ProductSearchWidget />
         </AuthProvider>
       </body>
     </html>

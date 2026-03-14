@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Plus, Search, Edit2, Trash2, Loader2, Car, Save, X, ChevronRight } from "lucide-react";
+import { Plus, Search, Edit2, Trash2, Loader2, Car, Save, X, ChevronRight, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,6 +16,7 @@ interface Model {
     id: string;
     name: string;
     slug: string;
+    imageUrl: string | null;
     brandId: string;
     brand: Brand;
     _count: {
@@ -37,8 +38,40 @@ export default function ModelsPage() {
 
     const [formData, setFormData] = useState({
         name: "",
-        brandId: ""
+        brandId: "",
+        imageUrl: ""
     });
+
+    const [uploading, setUploading] = useState(false);
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const res = await fetch("/api/admin/upload", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setFormData(prev => ({ ...prev, imageUrl: data.url }));
+            } else {
+                const data = await res.json();
+                alert(data.error || "Yükleme başarısız oldu.");
+            }
+        } catch (error) {
+            console.error("Upload error:", error);
+            alert("Bir hata oluştu.");
+        } finally {
+            setUploading(false);
+        }
+    };
 
     useEffect(() => {
         fetchData();
@@ -75,13 +108,13 @@ export default function ModelsPage() {
 
     const handleOpenAdd = () => {
         setEditingModel(null);
-        setFormData({ name: "", brandId: brands[0]?.id || "" });
+        setFormData({ name: "", brandId: brands[0]?.id || "", imageUrl: "" });
         setIsFormOpen(true);
     };
 
     const handleEdit = (model: Model) => {
         setEditingModel(model);
-        setFormData({ name: model.name, brandId: model.brandId });
+        setFormData({ name: model.name, brandId: model.brandId, imageUrl: model.imageUrl || "" });
         setIsFormOpen(true);
     };
 
@@ -179,10 +212,19 @@ export default function ModelsPage() {
                                 {filteredModels.map((model) => (
                                     <tr key={model.id} className="hover:bg-slate-50 transition-colors group">
                                         <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
-                                                <span className="font-semibold text-slate-500">{model.brand.name}</span>
-                                                <ChevronRight className="h-3 w-3 text-slate-300" />
-                                                <span className="font-bold text-slate-900 text-base">{model.name}</span>
+                                            <div className="flex items-center gap-3">
+                                                {model.imageUrl ? (
+                                                    <img src={model.imageUrl} alt={model.name} className="w-10 h-10 object-contain bg-white rounded border p-0.5" />
+                                                ) : (
+                                                    <div className="w-10 h-10 bg-slate-100 rounded flex items-center justify-center">
+                                                        <Car className="h-5 w-5 text-slate-400" />
+                                                    </div>
+                                                )}
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-semibold text-slate-500">{model.brand.name}</span>
+                                                    <ChevronRight className="h-3 w-3 text-slate-300" />
+                                                    <span className="font-bold text-slate-900 text-base">{model.name}</span>
+                                                </div>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
@@ -234,6 +276,43 @@ export default function ModelsPage() {
                             <div className="space-y-2">
                                 <Label htmlFor="name">Model Adı *</Label>
                                 <Input id="name" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="Örn: Corolla, Civic" />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="imageUrl">Model Görseli</Label>
+                                <div className="space-y-3">
+                                    {formData.imageUrl && (
+                                        <div className="relative w-24 h-24 border rounded-lg overflow-hidden bg-white">
+                                            <img src={formData.imageUrl} alt="Preview" className="w-full h-full object-contain p-1" />
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormData({ ...formData, imageUrl: "" })}
+                                                className="absolute top-0 right-0 bg-red-500 text-white p-0.5 rounded-bl-lg hover:bg-red-600 transition-colors"
+                                            >
+                                                <X className="h-4 w-4" />
+                                            </button>
+                                        </div>
+                                    )}
+                                    <div className="flex flex-col gap-2">
+                                        <div className="flex gap-2">
+                                            <div className="relative flex-1">
+                                                <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                                <Input id="imageUrl" className="pl-9" value={formData.imageUrl} onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })} placeholder="URL veya dosya yükleyin" />
+                                            </div>
+                                            <div className="relative">
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={handleFileUpload}
+                                                    className="absolute inset-0 opacity-0 cursor-pointer"
+                                                    disabled={uploading}
+                                                />
+                                                <Button type="button" variant="outline" disabled={uploading} size="icon">
+                                                    {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div className="flex justify-end gap-3 pt-4 border-t">
                                 <Button type="button" variant="ghost" onClick={() => setIsFormOpen(false)}>İptal</Button>

@@ -28,8 +28,8 @@ export async function POST(req: Request) {
         console.log("Product POST Body:", body);
         const { name, oemCode, description, price, stock, imageUrl, brandId, modelId, categoryId } = body;
 
-        if (!name || !oemCode || !brandId || !categoryId) {
-            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+        if (!name || !oemCode || !brandId) {
+            return NextResponse.json({ error: "Missing required fields (name, oemCode, brandId)" }, { status: 400 });
         }
 
         const product = await prisma.product.create({
@@ -38,12 +38,12 @@ export async function POST(req: Request) {
                 slug: slugify(name + "-" + oemCode),
                 oemCode,
                 description,
-                price: price ? parseFloat(price) : null,
-                stock: parseInt(stock) || 0,
+                price: price && !isNaN(parseFloat(price)) ? parseFloat(price) : null,
+                stock: stock && !isNaN(parseInt(stock)) ? parseInt(stock) : 0,
                 imageUrl,
                 brandId,
-                modelId: modelId || null,
-                categoryId,
+                modelId: (modelId && modelId.trim() !== "") ? modelId : null,
+                categoryId: (categoryId && categoryId.trim() !== "") ? categoryId : null,
             }
         });
 

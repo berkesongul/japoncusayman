@@ -88,6 +88,37 @@ export default function BrandsPage() {
         }
     };
 
+    const [uploading, setUploading] = useState(false);
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const res = await fetch("/api/admin/upload", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setFormData(prev => ({ ...prev, imageUrl: data.url }));
+            } else {
+                const data = await res.json();
+                alert(data.error || "Yükleme başarısız oldu.");
+            }
+        } catch (error) {
+            console.error("Upload error:", error);
+            alert("Bir hata oluştu.");
+        } finally {
+            setUploading(false);
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSubmitting(true);
@@ -200,14 +231,42 @@ export default function BrandsPage() {
                                 <Input id="name" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="Örn: Toyota, Honda" />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="imageUrl">Logo URL</Label>
-                                <div className="flex gap-2">
-                                    <div className="relative flex-1">
-                                        <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                        <Input id="imageUrl" className="pl-9" value={formData.imageUrl} onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })} placeholder="https://..." />
+                                <Label htmlFor="imageUrl">Marka Logosu</Label>
+                                <div className="space-y-3">
+                                    {formData.imageUrl && (
+                                        <div className="relative w-20 h-20 border rounded-lg overflow-hidden bg-white">
+                                            <img src={formData.imageUrl} alt="Preview" className="w-full h-full object-contain p-1" />
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormData({ ...formData, imageUrl: "" })}
+                                                className="absolute top-0 right-0 bg-red-500 text-white p-0.5 rounded-bl-lg hover:bg-red-600 transition-colors"
+                                            >
+                                                <X className="h-3 w-3" />
+                                            </button>
+                                        </div>
+                                    )}
+                                    <div className="flex flex-col gap-2">
+                                        <div className="flex gap-2">
+                                            <div className="relative flex-1">
+                                                <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                                <Input id="imageUrl" className="pl-9" value={formData.imageUrl} onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })} placeholder="URL veya dosya yükleyin" />
+                                            </div>
+                                            <div className="relative">
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={handleFileUpload}
+                                                    className="absolute inset-0 opacity-0 cursor-pointer"
+                                                    disabled={uploading}
+                                                />
+                                                <Button type="button" variant="outline" disabled={uploading} size="icon">
+                                                    {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                                                </Button>
+                                            </div>
+                                        </div>
+                                        <p className="text-[10px] text-muted-foreground">Logo URL'si girebilir veya artı (+) butonuna basarak dosya yükleyebilirsiniz.</p>
                                     </div>
                                 </div>
-                                <p className="text-[10px] text-muted-foreground">Şimdilik bir resim URL'si girin veya boş bırakın.</p>
                             </div>
                             <div className="flex justify-end gap-3 pt-4 border-t">
                                 <Button type="button" variant="ghost" onClick={() => setIsFormOpen(false)}>İptal</Button>

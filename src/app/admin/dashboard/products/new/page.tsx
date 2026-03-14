@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, Loader2, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Save, Loader2, Image as ImageIcon, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,6 +29,7 @@ export default function NewProductPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(true);
+    const [uploading, setUploading] = useState(false);
 
     const [brands, setBrands] = useState<Brand[]>([]);
     const [models, setModels] = useState<Model[]>([]);
@@ -45,6 +46,35 @@ export default function NewProductPage() {
         modelId: "",
         categoryId: ""
     });
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        const uploadData = new FormData();
+        uploadData.append("file", file);
+
+        try {
+            const res = await fetch("/api/admin/upload", {
+                method: "POST",
+                body: uploadData,
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setFormData(prev => ({ ...prev, imageUrl: data.url }));
+            } else {
+                const data = await res.json();
+                alert(data.error || "Yükleme başarısız oldu.");
+            }
+        } catch (error) {
+            console.error("Upload error:", error);
+            alert("Bir hata oluştu.");
+        } finally {
+            setUploading(false);
+        }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -233,22 +263,46 @@ export default function NewProductPage() {
                         <h2 className="text-lg font-semibold border-b pb-2">Görsel</h2>
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="imageUrl">Resim URL</Label>
-                                <div className="relative">
-                                    <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                    <Input
-                                        id="imageUrl"
-                                        className="pl-9"
-                                        value={formData.imageUrl}
-                                        onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                                        placeholder="https://..."
-                                    />
+                                <Label htmlFor="imageUrl">Ürün Görseli</Label>
+                                <div className="flex gap-2">
+                                    <div className="relative flex-1">
+                                        <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                        <Input
+                                            id="imageUrl"
+                                            className="pl-9"
+                                            value={formData.imageUrl}
+                                            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                                            placeholder="URL veya dosya yükleyin"
+                                        />
+                                    </div>
+                                    <div className="relative">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleFileUpload}
+                                            className="absolute inset-0 opacity-0 cursor-pointer"
+                                            disabled={uploading}
+                                        />
+                                        <Button type="button" variant="outline" disabled={uploading} size="icon">
+                                            {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                                        </Button>
+                                    </div>
                                 </div>
+                                <p className="text-[10px] text-muted-foreground">Logo URL'si girebilir veya artı (+) butonuna basarak dosya yükleyebilirsiniz.</p>
                             </div>
 
-                            <div className="aspect-video w-full bg-slate-50 border rounded-lg flex items-center justify-center overflow-hidden">
+                            <div className="relative aspect-video w-full bg-slate-50 border rounded-lg flex items-center justify-center overflow-hidden group">
                                 {formData.imageUrl ? (
-                                    <img src={formData.imageUrl} alt="Önizleme" className="max-w-full max-h-full object-contain" />
+                                    <>
+                                        <img src={formData.imageUrl} alt="Önizleme" className="max-w-full max-h-full object-contain p-2" />
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, imageUrl: "" })}
+                                            className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </button>
+                                    </>
                                 ) : (
                                     <div className="text-center p-6">
                                         <ImageIcon className="h-10 w-10 text-slate-300 mx-auto" />

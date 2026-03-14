@@ -32,6 +32,7 @@ model CarModel {
   id        String    @id @default(cuid())
   name      String
   slug      String    @unique
+  imageUrl  String?
   brandId   String
   brand     Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
   products  Product[]

@@ -42,6 +42,7 @@ export async function PUT(
         if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
         const body = await req.json();
+        console.log("Product PUT Body:", body);
         const { name, oemCode, description, price, stock, imageUrl, brandId, modelId, categoryId } = body;
 
         // Find product first to get actual ID if slug was used
@@ -53,6 +54,10 @@ export async function PUT(
 
         if (!existingProduct) return NextResponse.json({ error: "Product not found" }, { status: 404 });
 
+        if (!name || !oemCode || !brandId) {
+            return NextResponse.json({ error: "Missing required fields (name, oemCode, brandId)" }, { status: 400 });
+        }
+
         const product = await prisma.product.update({
             where: { id: existingProduct.id },
             data: {
@@ -60,12 +65,12 @@ export async function PUT(
                 slug: slugify(name + "-" + oemCode),
                 oemCode,
                 description,
-                price: price ? parseFloat(price) : null,
-                stock: parseInt(stock) || 0,
+                price: price && !isNaN(parseFloat(price)) ? parseFloat(price) : null,
+                stock: stock && !isNaN(parseInt(stock)) ? parseInt(stock) : 0,
                 imageUrl,
                 brandId,
-                modelId,
-                categoryId,
+                modelId: (modelId && modelId.trim() !== "") ? modelId : null,
+                categoryId: (categoryId && categoryId.trim() !== "") ? categoryId : null,
             }
         });
 

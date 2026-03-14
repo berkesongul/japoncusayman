@@ -25,7 +25,7 @@ export async function POST(req: Request) {
         const session = await getServerSession();
         if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-        const { name, brandId } = await req.json();
+        const { name, brandId, imageUrl } = await req.json();
         if (!name || !brandId) return NextResponse.json({ error: "Name and Brand are required" }, { status: 400 });
 
         const model = await prisma.carModel.create({
@@ -33,6 +33,7 @@ export async function POST(req: Request) {
                 name,
                 slug: slugify(name),
                 brandId,
+                imageUrl: imageUrl || null,
             }
         });
 
