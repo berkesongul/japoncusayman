@@ -12,6 +12,7 @@ interface ProductCardProps {
         description?: string | null;
         price?: number | null;
         imageUrl?: string | null;
+        manufacturer?: string | null;
         brand?: { name: string } | null;
         model?: { name: string } | null;
     };
@@ -43,10 +44,17 @@ export function ProductCard({ product }: ProductCardProps) {
 
             <CardHeader className="p-4 pb-2 space-y-1">
                 <div className="flex justify-between items-start gap-2">
-                    <Badge variant="outline" className="text-xs bg-background">
-                        {product.brand?.name || "Bilinmiyor"}
-                    </Badge>
-                    <span className="text-xs text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded">
+                    <div className="flex flex-wrap gap-1">
+                        <Badge variant="outline" className="text-[10px] bg-background">
+                            {product.brand?.name || "Bilinmiyor"}
+                        </Badge>
+                        {product.manufacturer && (
+                            <Badge variant="secondary" className="text-[10px] bg-blue-50/50">
+                                {product.manufacturer}
+                            </Badge>
+                        )}
+                    </div>
+                    <span className="text-[10px] text-muted-foreground font-mono bg-muted px-1.5 py-0.5 rounded whitespace-nowrap">
                         {product.oemCode}
                     </span>
                 </div>

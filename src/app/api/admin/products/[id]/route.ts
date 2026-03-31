@@ -43,7 +43,7 @@ export async function PUT(
 
         const body = await req.json();
         console.log("Product PUT Body:", body);
-        const { name, oemCode, description, price, stock, imageUrl, brandId, modelId, categoryId } = body;
+        const { name, oemCode, manufacturer, description, price, stock, isSpecialOrder, isCampaign, imageUrl, brandId, modelId, categoryId } = body;
 
         // Find product first to get actual ID if slug was used
         const existingProduct = await prisma.product.findFirst({
@@ -64,9 +64,12 @@ export async function PUT(
                 name,
                 slug: slugify(name + "-" + oemCode),
                 oemCode,
+                manufacturer: (manufacturer && manufacturer.trim() !== "") ? manufacturer : null,
                 description,
                 price: price && !isNaN(parseFloat(price)) ? parseFloat(price) : null,
                 stock: stock && !isNaN(parseInt(stock)) ? parseInt(stock) : 0,
+                isSpecialOrder: Boolean(isSpecialOrder),
+                isCampaign: Boolean(isCampaign),
                 imageUrl,
                 brandId,
                 modelId: (modelId && modelId.trim() !== "") ? modelId : null,

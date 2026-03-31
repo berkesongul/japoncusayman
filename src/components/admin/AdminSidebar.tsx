@@ -13,7 +13,8 @@ import {
     X,
     BarChart2,
     Settings,
-    Warehouse
+    Warehouse,
+    FolderTree
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ import { Button } from "@/components/ui/button";
 const navItems = [
     { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
     { name: "Ürünler", href: "/admin/dashboard/products", icon: Package },
+    { name: "Kategoriler", href: "/admin/dashboard/categories", icon: FolderTree },
     { name: "Stok Yönetimi", href: "/admin/dashboard/products/stock", icon: BarChart2 },
     { name: "Dükkan Stoğu", href: "/admin/dashboard/internal-stock", icon: Warehouse },
     { name: "Markalar", href: "/admin/dashboard/brands", icon: Tags },

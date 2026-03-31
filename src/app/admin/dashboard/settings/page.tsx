@@ -14,9 +14,11 @@ export default function SettingsPage() {
     const [settings, setSettings] = useState({
         address: "",
         phone: "",
+        phone2: "",
         email: "",
         workingHours: "",
         whatsapp: "",
+        instagram: "",
         googleMapsUrl: "",
     });
 
@@ -33,9 +35,11 @@ export default function SettingsPage() {
                     setSettings({
                         address: data.address || "",
                         phone: data.phone || "",
+                        phone2: data.phone2 || "",
                         email: data.email || "",
                         workingHours: data.workingHours || "",
                         whatsapp: data.whatsapp || "",
+                        instagram: data.instagram || "",
                         googleMapsUrl: data.googleMapsUrl || "",
                     });
                 }
@@ -94,14 +98,25 @@ export default function SettingsPage() {
                     </h2>
 
                     <div className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="phone">Telefon Numarası</Label>
-                            <Input
-                                id="phone"
-                                value={settings.phone}
-                                onChange={(e) => setSettings({ ...settings, phone: e.target.value })}
-                                placeholder="+90 5XX XXX XX XX"
-                            />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="phone">Telefon Numarası (1)</Label>
+                                <Input
+                                    id="phone"
+                                    value={settings.phone}
+                                    onChange={(e) => setSettings({ ...settings, phone: e.target.value })}
+                                    placeholder="+90 5XX XXX XX XX"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="phone2">Telefon Numarası (2)</Label>
+                                <Input
+                                    id="phone2"
+                                    value={settings.phone2}
+                                    onChange={(e) => setSettings({ ...settings, phone2: e.target.value })}
+                                    placeholder="+90 2XX XXX XX XX"
+                                />
+                            </div>
                         </div>
 
                         <div className="space-y-2">
@@ -123,6 +138,16 @@ export default function SettingsPage() {
                                 value={settings.email}
                                 onChange={(e) => setSettings({ ...settings, email: e.target.value })}
                                 placeholder="info@japoncusayman.com"
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="instagram">Instagram Kullanıcı Adı veya URL</Label>
+                            <Input
+                                id="instagram"
+                                value={settings.instagram}
+                                onChange={(e) => setSettings({ ...settings, instagram: e.target.value })}
+                                placeholder="https://instagram.com/japoncusayman"
                             />
                         </div>
                     </div>

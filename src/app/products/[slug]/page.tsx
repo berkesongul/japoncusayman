@@ -109,11 +109,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
                     </h1>
 
                     <div className="flex items-center justify-between py-4 border-b">
-                        <div>
+                        <div className="flex-1">
                             <p className="text-sm text-muted-foreground">OEM Kodu</p>
                             <p className="font-mono text-lg font-medium">{product.oemCode}</p>
                         </div>
-                        <div className="text-right">
+                        {product.manufacturer && (
+                            <div className="flex-1 text-center">
+                                <p className="text-sm text-muted-foreground">Üretici</p>
+                                <p className="font-medium text-lg">{product.manufacturer}</p>
+                            </div>
+                        )}
+                        <div className="flex-1 text-right">
                             <p className="text-sm text-muted-foreground">Uyumlu Model</p>
                             <p className="font-medium">{product.model?.name || "Universal"}</p>
                         </div>
@@ -131,7 +137,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
                         <div className="flex items-center gap-3 mt-3">
                             <span className="text-sm text-muted-foreground">Stok Durumu:</span>
-                            {product.stock > 10 ? (
+                            {product.isSpecialOrder ? (
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
+                                    ℹ Özel Sipariş (Stok bilgisi için iletişime geçin)
+                                </span>
+                            ) : product.stock > 10 ? (
                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
                                     ✓ Stokta Var ({product.stock} adet)
                                 </span>

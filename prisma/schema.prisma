@@ -46,6 +46,9 @@ model Category {
   id        String    @id @default(cuid())
   name      String    @unique
   slug      String    @unique
+  parentId  String?
+  parent    Category? @relation("CategoryToCategory", fields: [parentId], references: [id], onDelete: SetNull)
+  children  Category[] @relation("CategoryToCategory")
   products  Product[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -56,9 +59,12 @@ model Product {
   name        String
   slug        String    @unique
   oemCode     String
+  manufacturer String?
   description String?   @db.Text
   price       Float?
   stock       Int       @default(0)
+  isSpecialOrder Boolean @default(false)
+  isCampaign  Boolean   @default(false)
   imageUrl    String?
   
   brandId     String
@@ -81,9 +87,11 @@ model Settings {
   id            String   @id @default("site-settings")
   address       String?
   phone         String?
+  phone2        String?
   email         String?
   workingHours  String?
   whatsapp      String?
+  instagram     String?
   googleMapsUrl String?
   updatedAt     DateTime @updatedAt
 }
@@ -95,6 +103,7 @@ model InternalStock {
   quantity    Int      @default(0)
   location    String?  // e.g., "Raf A-1"
   notes       String?  @db.Text
+  imageUrl    String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

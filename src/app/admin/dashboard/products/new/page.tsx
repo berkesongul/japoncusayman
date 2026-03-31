@@ -23,6 +23,7 @@ interface Model {
 interface Category {
     id: string;
     name: string;
+    parentId?: string | null;
 }
 
 export default function NewProductPage() {
@@ -38,9 +39,12 @@ export default function NewProductPage() {
     const [formData, setFormData] = useState({
         name: "",
         oemCode: "",
+        manufacturer: "",
         description: "",
         price: "",
         stock: "0",
+        isSpecialOrder: false,
+        isCampaign: false,
         imageUrl: "",
         brandId: "",
         modelId: "",
@@ -175,6 +179,15 @@ export default function NewProductPage() {
                             />
                         </div>
                         <div className="space-y-2">
+                            <Label htmlFor="manufacturer">Parça Üretici Markası</Label>
+                            <Input
+                                id="manufacturer"
+                                value={formData.manufacturer}
+                                onChange={(e) => setFormData({ ...formData, manufacturer: e.target.value })}
+                                placeholder="Örn: Bosch, Valeo, Orjinal..."
+                            />
+                        </div>
+                        <div className="space-y-2">
                             <Label htmlFor="description">Açıklama</Label>
                             <Textarea
                                 id="description"
@@ -208,7 +221,34 @@ export default function NewProductPage() {
                                     value={formData.stock}
                                     onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
                                     placeholder="0"
+                                    disabled={formData.isSpecialOrder}
                                 />
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-3 mt-4">
+                            <div className="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    id="isSpecialOrder"
+                                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
+                                    checked={formData.isSpecialOrder}
+                                    onChange={(e) => setFormData({ ...formData, isSpecialOrder: e.target.checked })}
+                                />
+                                <Label htmlFor="isSpecialOrder" className="font-normal cursor-pointer">
+                                    Bu bir "Özel Sipariş" (stok harici) ürünüdür.
+                                </Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    id="isCampaign"
+                                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
+                                    checked={formData.isCampaign}
+                                    onChange={(e) => setFormData({ ...formData, isCampaign: e.target.checked })}
+                                />
+                                <Label htmlFor="isCampaign" className="font-normal cursor-pointer font-medium text-amber-600">
+                                    Kampanyalı Ürün (Fırsat reyonunda çıkar)
+                                </Label>
                             </div>
                         </div>
                     </div>
@@ -254,7 +294,14 @@ export default function NewProductPage() {
                                 onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
                             >
                                 <option value="" disabled>Kategori Seçin</option>
-                                {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                {categories.filter(c => !c.parentId).map(parent => (
+                                    <optgroup key={parent.id} label={parent.name}>
+                                        <option value={parent.id}>{parent.name} (Ana Kategori)</option>
+                                        {categories.filter(c => c.parentId === parent.id).map(child => (
+                                            <option key={child.id} value={child.id}>— {child.name}</option>
+                                        ))}
+                                    </optgroup>
+                                ))}
                             </select>
                         </div>
                     </div>

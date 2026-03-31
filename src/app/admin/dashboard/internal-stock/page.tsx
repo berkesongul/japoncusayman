@@ -13,7 +13,8 @@ import {
     ChevronUp,
     ChevronDown,
     Save,
-    X
+    X,
+    Image as ImageIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,7 @@ interface InternalStockItem {
     quantity: number;
     location: string | null;
     notes: string | null;
+    imageUrl: string | null;
     updatedAt: string;
 }
 
@@ -44,8 +46,39 @@ export default function InternalStockPage() {
         oemCode: "",
         quantity: 0,
         location: "",
-        notes: ""
+        notes: "",
+        imageUrl: ""
     });
+    const [uploading, setUploading] = useState(false);
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        const uploadData = new FormData();
+        uploadData.append("file", file);
+
+        try {
+            const res = await fetch("/api/admin/upload", {
+                method: "POST",
+                body: uploadData,
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                setFormData(prev => ({ ...prev, imageUrl: data.url }));
+            } else {
+                const data = await res.json();
+                alert(data.error || "Yükleme başarısız oldu.");
+            }
+        } catch (error) {
+            console.error("Upload error:", error);
+            alert("Bir hata oluştu.");
+        } finally {
+            setUploading(false);
+        }
+    };
 
     useEffect(() => {
         fetchItems();
@@ -77,7 +110,8 @@ export default function InternalStockPage() {
             oemCode: "",
             quantity: 0,
             location: "",
-            notes: ""
+            notes: "",
+            imageUrl: ""
         });
         setIsFormOpen(true);
     };
@@ -89,7 +123,8 @@ export default function InternalStockPage() {
             oemCode: item.oemCode || "",
             quantity: item.quantity,
             location: item.location || "",
-            notes: item.notes || ""
+            notes: item.notes || "",
+            imageUrl: item.imageUrl || ""
         });
         setIsFormOpen(true);
     };
@@ -210,13 +245,26 @@ export default function InternalStockPage() {
                                 {items.map((item) => (
                                     <tr key={item.id} className="hover:bg-muted/50 transition-colors">
                                         <td className="px-6 py-4">
-                                            <div className="font-semibold text-slate-900">{item.name}</div>
-                                            {item.oemCode && (
-                                                <div className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
-                                                    <Tag className="h-3 w-3" />
-                                                    {item.oemCode}
+                                            <div className="flex items-center gap-3">
+                                                {item.imageUrl ? (
+                                                    <div className="h-10 w-10 shrink-0 rounded-md border flex items-center justify-center bg-white overflow-hidden">
+                                                        <img src={item.imageUrl} alt={item.name} className="h-full w-full object-cover" />
+                                                    </div>
+                                                ) : (
+                                                    <div className="h-10 w-10 shrink-0 rounded-md border bg-slate-50 flex items-center justify-center">
+                                                        <ImageIcon className="h-4 w-4 text-slate-300" />
+                                                    </div>
+                                                )}
+                                                <div>
+                                                    <div className="font-semibold text-slate-900">{item.name}</div>
+                                                    {item.oemCode && (
+                                                        <div className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
+                                                            <Tag className="h-3 w-3" />
+                                                            {item.oemCode}
+                                                        </div>
+                                                    )}
                                                 </div>
-                                            )}
+                                            </div>
                                         </td>
                                         <td className="px-6 py-4">
                                             {item.location ? (
@@ -347,6 +395,39 @@ export default function InternalStockPage() {
                                     placeholder="Ürün hakkında ek bilgiler..."
                                 />
                             </div>
+
+                            <div className="space-y-2">
+                                <Label>Görsel Yükle</Label>
+                                <div className="flex gap-2 items-center">
+                                    <div className="relative flex-1">
+                                        <ImageIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                        <Input
+                                            className="pl-9"
+                                            value={formData.imageUrl}
+                                            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                                            placeholder="URL girin veya yükleyin..."
+                                        />
+                                    </div>
+                                    <div className="relative">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleFileUpload}
+                                            className="absolute inset-0 opacity-0 cursor-pointer"
+                                            disabled={uploading}
+                                        />
+                                        <Button type="button" variant="outline" disabled={uploading}>
+                                            {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Dosya Yükle"}
+                                        </Button>
+                                    </div>
+                                </div>
+                                {formData.imageUrl && (
+                                    <div className="mt-2 text-xs text-green-600 font-medium flex items-center gap-1 border border-green-200 bg-green-50 p-2 rounded-md">
+                                        ✓ Görsel Seçildi (Önizleme: <img src={formData.imageUrl} className="h-6 w-6 object-cover rounded ml-1 border border-green-200" alt="Preview"/>)
+                                    </div>
+                                )}
+                            </div>
+
                             <div className="flex justify-end gap-3 pt-4 border-t mt-6">
                                 <Button type="button" variant="ghost" onClick={() => setIsFormOpen(false)}>İptal</Button>
                                 <Button type="submit" disabled={submitting} className="min-w-[120px]">

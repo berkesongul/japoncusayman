@@ -65,13 +65,10 @@ export default async function Home() {
             {/* Left Content */}
             <div className="lg:w-1/2 space-y-8 animate-fade-in-up">
               <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight text-white leading-tight animate-fade-in-up delay-100 [text-shadow:0_2px_16px_rgba(0,0,0,0.7)]">
-                Aracınız İçin <br />
-                <span className="text-white">
-                  En Kaliteli Parçalar
-                </span>
+                Japoncu Sayman <br />
               </h1>
               <p className="text-lg md:text-xl text-slate-200 max-w-2xl leading-relaxed animate-fade-in-up delay-200 [text-shadow:0_1px_8px_rgba(0,0,0,0.6)]">
-                Japoncu Sayman, tüm Uzakdoğu marka araçlar için orijinal ve yüksek kaliteli yan sanayi yedek parçaları en uygun fiyatlarla sunar.
+                Japoncu Sayman, Japon araçları öncelikli olmak üzere tüm araç marka ve modelleri için orijinal ve yüksek kaliteli parçaları en uygun fiyatlarla sunar ve çözüm üretir.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-4 animate-fade-in-up delay-300">
                 <Button size="lg" className="text-lg font-medium px-8" asChild>
@@ -89,7 +86,7 @@ export default async function Home() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-white">Güvenilir Ürün</h4>
-                    <p className="text-sm text-slate-400">Garantili parçalar</p>
+                    <p className="text-sm text-slate-400">Garantili araç parçaları</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -107,7 +104,7 @@ export default async function Home() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-white">Geniş Stok</h4>
-                    <p className="text-sm text-slate-400">Tüm Japon markaları</p>
+                    <p className="text-sm text-slate-400">Tüm araç markaları</p>
                   </div>
                 </div>
               </div>

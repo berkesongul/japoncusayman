@@ -39,6 +39,7 @@ export async function POST(req: Request) {
                 quantity: parseInt(data.quantity) || 0,
                 location: data.location,
                 notes: data.notes,
+                imageUrl: data.imageUrl,
             },
         });
 

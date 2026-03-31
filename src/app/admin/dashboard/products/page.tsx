@@ -48,6 +48,7 @@ export default async function AdminProductsPage() {
                                 <TableRow>
                                     <TableHead>Ürün</TableHead>
                                     <TableHead>OEM Kodu</TableHead>
+                                    <TableHead>Üretici</TableHead>
                                     <TableHead>Marka / Model / Kategori</TableHead>
                                     <TableHead className="text-right">Fiyat</TableHead>
                                     <TableHead className="text-center">Stok</TableHead>
@@ -66,13 +67,21 @@ export default async function AdminProductsPage() {
                                         <TableRow key={product.id}>
                                             <TableCell className="font-medium">
                                                 <div className="flex flex-col">
-                                                    <span>{product.name}</span>
+                                                    <div className="flex items-center gap-2">
+                                                        <span>{product.name}</span>
+                                                        {product.isCampaign && (
+                                                            <Badge variant="default" className="bg-red-500 hover:bg-red-600 text-[9px] px-1 py-0 h-4 leading-none">
+                                                                KAMPANYA
+                                                            </Badge>
+                                                        )}
+                                                    </div>
                                                     <span className="text-xs text-muted-foreground hidden lg:block">
                                                         {product.slug}
                                                     </span>
                                                 </div>
                                             </TableCell>
                                             <TableCell className="font-mono text-sm">{product.oemCode}</TableCell>
+                                            <TableCell className="text-sm text-muted-foreground">{product.manufacturer || "-"}</TableCell>
                                             <TableCell>
                                                 <div className="flex flex-wrap gap-2">
                                                     <Badge variant="outline" className="bg-blue-50/50">{product.brand?.name || "Marka Bilinmiyor"}</Badge>
@@ -90,11 +99,17 @@ export default async function AdminProductsPage() {
                                                 {product.price ? `${product.price.toLocaleString("tr-TR")} ₺` : "-"}
                                             </TableCell>
                                             <TableCell className="text-center">
-                                                <Badge
-                                                    variant={product.stock > 10 ? "default" : product.stock > 0 ? "secondary" : "destructive"}
-                                                >
-                                                    {product.stock}
-                                                </Badge>
+                                                {product.isSpecialOrder ? (
+                                                    <Badge variant="outline" className="border-amber-500 text-amber-600 bg-amber-50">
+                                                        Özel Sipariş
+                                                    </Badge>
+                                                ) : (
+                                                    <Badge
+                                                        variant={product.stock > 10 ? "default" : product.stock > 0 ? "secondary" : "destructive"}
+                                                    >
+                                                        {product.stock} Adet
+                                                    </Badge>
+                                                )}
                                             </TableCell>
                                             <TableCell className="text-center">
                                                 <DropdownMenu>
