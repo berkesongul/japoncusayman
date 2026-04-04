@@ -23,7 +23,9 @@ services:
     networks:
       - app_network
     volumes:
-      - next_uploads:/app/public/uploads
+      - ./public/uploads:/app/public/uploads
+      - ./.next/static:/app/.next/static
+      - ./public/images:/app/public/images
 
   db:
     image: postgres:15-alpine
@@ -47,4 +49,3 @@ networks:
 
 volumes:
   postgres_data:
-  next_uploads:
