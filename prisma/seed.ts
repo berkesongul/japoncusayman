@@ -17,10 +17,10 @@ async function main() {
     // Create Default Admin User
     const adminPasswordHtml = await bcrypt.hash("japoncusayman-123", 10);
     const admin = await prisma.adminUser.upsert({
-        where: { email: "[EMAIL_ADDRESS]" },
+        where: { email: "admin@japoncusayman.com" },
         update: {},
         create: {
-            email: "[EMAIL_ADDRESS]",
+            email: "admin@japoncusayman.com",
             password: adminPasswordHtml,
         },
     });
