@@ -24,7 +24,7 @@ interface Model {
     };
 }
 
-export default function ModelsPage() {
+function ModelsPageContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
@@ -326,5 +326,13 @@ export default function ModelsPage() {
                 </div>
             )}
         </div>
+    );
+}
+
+export default function ModelsPage() {
+    return (
+        <React.Suspense fallback={<div className="p-12 flex justify-center"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>}>
+            <ModelsPageContent />
+        </React.Suspense>
     );
 }
