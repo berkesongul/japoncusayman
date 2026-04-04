@@ -194,6 +194,7 @@ export default async function Home() {
                       src={brand.imageUrl}
                       alt={brand.name}
                       fill
+                      unoptimized
                       className="object-contain p-2"
                       sizes="(max-width: 768px) 50vw, 15vw"
                     />

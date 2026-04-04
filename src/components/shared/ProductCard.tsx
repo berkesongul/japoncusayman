@@ -39,6 +39,7 @@ export function ProductCard({ product }: ProductCardProps) {
                                 src={product.imageUrl}
                                 alt={product.name}
                                 fill
+                                unoptimized
                                 className="object-contain p-4 drop-shadow-md"
                                 sizes="(max-width: 768px) 50vw, 25vw"
                             />
