@@ -1,5 +1,8 @@
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 
+// Veritabanı Docker build sürecinde ayağa henüz kalkmamış olacağı için 
+// admin paneli derleme sırasında db'yi arayıp hata vermemesi için dinamik yapıyoruz.
+export const dynamic = "force-dynamic";
 export default function AdminLayout({
     children,
 }: {

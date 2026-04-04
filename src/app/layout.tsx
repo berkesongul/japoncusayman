@@ -4,6 +4,11 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
 
+// Tüm sayfaların derleme sırasında (build-time) değil sunucu çalıştığı an 
+// (runtime) render edilmesi için zorlanır. Bu sayede Docker build 
+// işlemi veritabanı yokuşuna takılmaz.
+export const dynamic = "force-dynamic";
+
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
