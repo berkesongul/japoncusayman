@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextjs_app
+    restart: always
+    ports:
+      # Sadece localhost (127.0.0.1) üzerinden 3000 portuna açık.
+      # Nginx ile http://localhost:3000 adresine reverse proxy yapılmalıdır.
+      - "127.0.0.1:3000:3000"
+    environment:
+      # Veritabanı ile uygulama aynı docker ağında (db) olduğu için host'u 'db' olarak belirtiyoruz
+      # Fakat .env dosyanızdaki ayarlar da dahil edilecek.
+      # DBURL ezilmesi için: DATABASE_URL=postgresql://POSTGRES_USER:POSTGRES_PASSWORD@db:5432/POSTGRES_DB
+      - PORT=3000
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      - app_network
+
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin123}
+      POSTGRES_DB: ${POSTGRES_DB:-japoncusayman}
+    ports:
+      # Localhost'a postgres veritabanını dışarı aç (Dış IP'den erişim olmaması güvenlik içindir)
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  postgres_data:

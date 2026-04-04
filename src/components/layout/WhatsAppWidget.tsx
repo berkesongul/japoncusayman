@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export function WhatsAppWidget() {
     const [whatsappNumber, setWhatsappNumber] = useState("");
+    const pathname = usePathname();
 
     useEffect(() => {
         const fetchSettings = async () => {
@@ -23,7 +25,7 @@ export function WhatsAppWidget() {
         fetchSettings();
     }, []);
 
-    if (!whatsappNumber) return null;
+    if (!whatsappNumber || pathname?.startsWith("/admin")) return null;
 
     const handleClick = () => {
         const url = `https://wa.me/${whatsappNumber.replace(/\+/g, "").replace(/\s+/g, "")}?text=Merhaba%2C%20bilgi%20almak%20istiyorum.`;

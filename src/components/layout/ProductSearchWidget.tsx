@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Search, X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -10,6 +10,9 @@ export function ProductSearchWidget() {
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const router = useRouter();
+    const pathname = usePathname();
+
+    if (pathname?.startsWith("/admin")) return null;
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
