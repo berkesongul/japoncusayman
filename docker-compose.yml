@@ -1,4 +1,4 @@
-version: '3.8'
+# Docker Compose version 3.8 structure (obsolete field removed)
 
 services:
   app:
@@ -22,6 +22,8 @@ services:
       - db
     networks:
       - app_network
+    volumes:
+      - next_uploads:/app/public/uploads
 
   db:
     image: postgres:15-alpine
@@ -45,3 +47,4 @@ networks:
 
 volumes:
   postgres_data:
+  next_uploads:

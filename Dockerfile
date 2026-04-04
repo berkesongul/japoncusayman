@@ -41,6 +41,8 @@ RUN adduser --system --uid 1001 nextjs
 
 # Public klasörünü kopyala (Resimler, fontlar vb.)
 COPY --from=builder /app/public ./public
+# Uploads klasörü için kalıcı alanın yazılabilir olduğundan emin ol
+RUN mkdir -p public/uploads && chown nextjs:nodejs public/uploads
 
 # Sadece standalone derleme dosyalarını kopyala
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
