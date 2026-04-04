@@ -24,8 +24,6 @@ services:
       - app_network
     volumes:
       - ./public/uploads:/app/public/uploads
-      - ./.next/static:/app/.next/static
-      - ./public/images:/app/public/images
 
   db:
     image: postgres:15-alpine
