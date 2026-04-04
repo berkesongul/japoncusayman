@@ -16,6 +16,13 @@ export default async function ProductsPage(props: {
     const searchParams = await props.searchParams;
     const query = typeof searchParams.q === "string" ? searchParams.q : undefined;
     const brandSlug = typeof searchParams.brand === "string" ? searchParams.brand : undefined;
+    const categorySlug = typeof searchParams.category === "string" ? searchParams.category : undefined;
+
+    // Fetch brands and categories from database for the sidebar
+    const [brands, categories] = await Promise.all([
+        prisma.brand.findMany({ orderBy: { name: "asc" } }),
+        prisma.category.findMany({ orderBy: { name: "asc" } }),
+    ]);
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -23,7 +30,7 @@ export default async function ProductsPage(props: {
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Tüm Parçalar</h1>
                     <p className="text-muted-foreground mt-1">
-                        {query ? `"${query}" için arama sonuçları` : brandSlug ? `Seçili marka: ${brandSlug}` : "Katalogdaki tüm ürünleri inceleyin."}
+                        {query ? `"${query}" için arama sonuçları` : brandSlug ? `Seçili marka: ${brandSlug}` : categorySlug ? `Seçili kategori: ${categorySlug}` : "Katalogdaki tüm ürünleri inceleyin."}
                     </p>
                 </div>
 
@@ -43,25 +50,41 @@ export default async function ProductsPage(props: {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                {/* Sidebar filters (Static for now) */}
+                {/* Sidebar filters - DYNAMIC from database */}
                 <div className="hidden lg:block space-y-6">
                     <div>
                         <h3 className="font-semibold mb-4 border-b pb-2">Kategoriler</h3>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                            <li><a href="/products" className="hover:text-primary transition-colors">Tüm Ürünler</a></li>
-                            <li><a href="/products?category=motor-parcalari" className="hover:text-primary transition-colors">Motor Parçaları</a></li>
-                            <li><a href="/products?category=fren-sistemi" className="hover:text-primary transition-colors">Fren Sistemi</a></li>
-                            <li><a href="/products?category=suspansiyon" className="hover:text-primary transition-colors">Süspansiyon</a></li>
+                            <li>
+                                <a href="/products" className={`hover:text-primary transition-colors ${!categorySlug && !brandSlug && !query ? 'text-primary font-medium' : ''}`}>
+                                    Tüm Ürünler
+                                </a>
+                            </li>
+                            {categories.map((category) => (
+                                <li key={category.id}>
+                                    <a
+                                        href={`/products?category=${category.slug}`}
+                                        className={`hover:text-primary transition-colors ${categorySlug === category.slug ? 'text-primary font-medium' : ''}`}
+                                    >
+                                        {category.name}
+                                    </a>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                     <div>
                         <h3 className="font-semibold mb-4 border-b pb-2">Markalar</h3>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                            <li><a href="/products?brand=toyota" className="hover:text-primary transition-colors">Toyota</a></li>
-                            <li><a href="/products?brand=honda" className="hover:text-primary transition-colors">Honda</a></li>
-                            <li><a href="/products?brand=nissan" className="hover:text-primary transition-colors">Nissan</a></li>
-                            <li><a href="/products?brand=mazda" className="hover:text-primary transition-colors">Mazda</a></li>
-                            <li><a href="/products?brand=mitsubishi" className="hover:text-primary transition-colors">Mitsubishi</a></li>
+                            {brands.map((brand) => (
+                                <li key={brand.id}>
+                                    <a
+                                        href={`/products?brand=${brand.slug}`}
+                                        className={`hover:text-primary transition-colors ${brandSlug === brand.slug ? 'text-primary font-medium' : ''}`}
+                                    >
+                                        {brand.name}
+                                    </a>
+                                </li>
+                            ))}
                         </ul>
                     </div>
                 </div>
@@ -69,7 +92,7 @@ export default async function ProductsPage(props: {
                 {/* Product Grid */}
                 <div className="lg:col-span-3">
                     <Suspense fallback={<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"><p>Yükleniyor...</p></div>}>
-                        <ProductList query={query} brandSlug={brandSlug} />
+                        <ProductList query={query} brandSlug={brandSlug} categorySlug={categorySlug} />
                     </Suspense>
                 </div>
             </div>
@@ -77,7 +100,7 @@ export default async function ProductsPage(props: {
     );
 }
 
-async function ProductList({ query, brandSlug }: { query?: string; brandSlug?: string }) {
+async function ProductList({ query, brandSlug, categorySlug }: { query?: string; brandSlug?: string; categorySlug?: string }) {
     // Construct the Prisma where clause based on the filters
     const whereClause: any = {};
 
@@ -90,6 +113,10 @@ async function ProductList({ query, brandSlug }: { query?: string; brandSlug?: s
 
     if (brandSlug) {
         whereClause.brand = { slug: brandSlug };
+    }
+
+    if (categorySlug) {
+        whereClause.category = { slug: categorySlug };
     }
 
     const products = await prisma.product.findMany({

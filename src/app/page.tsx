@@ -179,6 +179,12 @@ export default async function Home() {
             <h2 className="text-3xl font-bold tracking-tight">Öne Çıkan Markalar</h2>
             <p className="text-muted-foreground">Aradığınız modele uygun parçaları marka seçerek bulun.</p>
           </div>
+          <Button variant="ghost" className="gap-2 hidden md:flex" asChild>
+            <Link href="/markalar">
+              Hepsini Gör
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </Button>
         </FadeIn>
 
         <StaggerContainer className="grid grid-cols-2 lg:grid-cols-6 gap-6">

@@ -63,7 +63,7 @@ export function Navbar() {
                             Yedek Parça
                         </Link>
                         <Link
-                            href="/#brands"
+                            href="/markalar"
                             className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                         >
                             Markalar
@@ -166,7 +166,7 @@ export function Navbar() {
                                     Yedek Parça
                                 </Link>
                                 <Link
-                                    href="/#brands"
+                                    href="/markalar"
                                     onClick={() => setIsOpen(false)}
                                     className="flex items-center px-4 py-3.5 text-base font-semibold text-foreground hover:bg-muted hover:text-primary rounded-lg transition-colors border border-transparent hover:border-border"
                                 >
