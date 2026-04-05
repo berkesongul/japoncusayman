@@ -1,0 +1,27 @@
+name: 🚀 Deploy to VPS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔗 SSH into VPS and Deploy
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd /var/www/japoncusayman
+            echo "📥 Pulling latest code..."
+            git pull origin main
+            echo "🔨 Building and restarting Docker..."
+            docker compose up -d --build app
+            echo "🧹 Cleaning up old images..."
+            docker image prune -f
+            echo "✅ Deploy complete!"
