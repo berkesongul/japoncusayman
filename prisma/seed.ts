@@ -115,7 +115,7 @@ async function main() {
         create: { name: "Süspansiyon", slug: "suspansiyon" },
     });
 
-    // Create Products
+    // Create Productss
     const products = [
         {
             name: "Toyota Corolla Fren Balatası Ön",
