@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
+import { MoreHorizontal, Pencil, Plus } from "lucide-react";
+import { DeleteProductButton } from "@/components/admin/DeleteProductButton";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 
@@ -125,9 +126,7 @@ export default async function AdminProductsPage() {
                                                                 <Pencil className="mr-2 h-4 w-4" /> Düzenle
                                                             </Link>
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem className="text-destructive focus:bg-destructive/10">
-                                                            <Trash2 className="mr-2 h-4 w-4" /> Sil
-                                                        </DropdownMenuItem>
+                                                        <DeleteProductButton productId={product.id} productName={product.name} />
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             </TableCell>
