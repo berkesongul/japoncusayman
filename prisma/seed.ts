@@ -15,17 +15,18 @@ async function main() {
     console.log("🌱 Seeding database...");
 
     // Create Default Admin User
-    const adminPasswordHtml = await bcrypt.hash("japoncusayman-123", 10);
+    const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+    const adminPasswordHtml = await bcrypt.hash(adminPassword, 10);
     const admin = await prisma.adminUser.upsert({
         where: { email: "admin@japoncusayman.com" },
-        update: {},
+        update: { password: adminPasswordHtml },
         create: {
             email: "admin@japoncusayman.com",
             password: adminPasswordHtml,
         },
     });
 
-    console.log(`👤 Default admin created: admin@japoncusayman.com / admin123`);
+    console.log(`👤 Default admin created: admin@japoncusayman.com / (password from .env)`);
 
     // Create Brands
     const toyota = await prisma.brand.upsert({
