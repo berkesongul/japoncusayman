@@ -17,6 +17,7 @@ export function Footer() {
                     <Link href="/#brands" className="hover:text-foreground transition-colors">Markalar</Link>
                     <Link href="/iletisim" className="hover:text-foreground transition-colors">İletişim</Link>
                     <Link href="/kvkk" className="hover:text-foreground transition-colors">KVKK</Link>
+                    <Link href="/sss" className="hover:text-foreground transition-colors">S.S.S.</Link>
                 </nav>
 
                 {/* Sağ: Developer */}
