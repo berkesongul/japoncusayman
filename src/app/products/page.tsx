@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { ProductCard } from "@/components/shared/ProductCard";
+import { ContactCorporateSection } from "@/components/shared/ContactCorporateSection";
 import { prisma } from "@/lib/prisma";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -96,6 +97,9 @@ export default async function ProductsPage(props: {
                     </Suspense>
                 </div>
             </div>
+
+            {/* İletişim ve Kurumsal Bölümler */}
+            <ContactCorporateSection />
         </div>
     );
 }

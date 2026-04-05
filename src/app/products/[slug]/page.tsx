@@ -5,6 +5,7 @@ import { ChevronRight } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { Badge } from "@/components/ui/badge";
 import { WhatsAppButton } from "@/components/shared/WhatsAppButton";
+import { ContactCorporateSection } from "@/components/shared/ContactCorporateSection";
 import { Metadata } from "next";
 
 interface ProductPageProps {
@@ -181,6 +182,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
 
             {/* Related Products Grid (Wait to import ProductCard dynamically or just let it compile) */}
+
+            {/* İletişim ve Kurumsal Bölümler */}
+            <ContactCorporateSection />
         </div>
     );
 }
