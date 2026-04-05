@@ -10,12 +10,13 @@ export function Footer() {
                 </p>
 
                 {/* Orta: Nav */}
-                <nav className="flex items-center gap-6">
+                <nav className="flex items-center gap-6 flex-wrap justify-center">
                     <Link href="/" className="hover:text-foreground transition-colors">Ana Sayfa</Link>
                     <Link href="/kurumsal" className="hover:text-foreground transition-colors">Kurumsal</Link>
                     <Link href="/products" className="hover:text-foreground transition-colors">Yedek Parça</Link>
                     <Link href="/#brands" className="hover:text-foreground transition-colors">Markalar</Link>
                     <Link href="/iletisim" className="hover:text-foreground transition-colors">İletişim</Link>
+                    <Link href="/kvkk" className="hover:text-foreground transition-colors">KVKK</Link>
                 </nav>
 
                 {/* Sağ: Developer */}
