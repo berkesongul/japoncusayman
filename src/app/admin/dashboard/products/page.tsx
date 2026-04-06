@@ -47,7 +47,7 @@ export default async function AdminProductsPage() {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Ürün</TableHead>
+                                    <TableHead className="w-[300px]">Ürün</TableHead>
                                     <TableHead>OEM Kodu</TableHead>
                                     <TableHead>Üretici</TableHead>
                                     <TableHead>Marka / Model / Kategori</TableHead>
@@ -66,17 +66,17 @@ export default async function AdminProductsPage() {
                                 ) : (
                                     products.map((product) => (
                                         <TableRow key={product.id}>
-                                            <TableCell className="font-medium">
-                                                <div className="flex flex-col">
+                                            <TableCell className="font-medium max-w-[300px]">
+                                                <div className="flex flex-col gap-0.5">
                                                     <div className="flex items-center gap-2">
-                                                        <span>{product.name}</span>
+                                                        <span className="truncate block" title={product.name}>{product.name}</span>
                                                         {product.isCampaign && (
                                                             <Badge variant="default" className="bg-red-500 hover:bg-red-600 text-[9px] px-1 py-0 h-4 leading-none">
                                                                 KAMPANYA
                                                             </Badge>
                                                         )}
                                                     </div>
-                                                    <span className="text-xs text-muted-foreground hidden lg:block">
+                                                    <span className="text-[10px] text-muted-foreground truncate hidden lg:block opacity-70">
                                                         {product.slug}
                                                     </span>
                                                 </div>
