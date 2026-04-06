@@ -58,6 +58,12 @@ async function CampaignProductList({ query }: { query?: string }) {
         isCampaign: true
     };
 
+    // Fetch site settings for WhatsApp number
+    const settings = await prisma.settings.findUnique({
+        where: { id: "site-settings" },
+    });
+    const whatsappNumber = settings?.whatsapp || settings?.phone || undefined;
+
     if (query) {
         whereClause.OR = [
             { name: { contains: query, mode: "insensitive" } },
@@ -89,7 +95,7 @@ async function CampaignProductList({ query }: { query?: string }) {
                     <div className="absolute -top-3 -right-3 z-10 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg transform rotate-3">
                         KAMPANYA
                     </div>
-                    <ProductCard product={product} />
+                    <ProductCard product={product} whatsappNumber={whatsappNumber} />
                 </div>
             ))}
         </div>

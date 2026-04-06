@@ -108,6 +108,12 @@ async function ProductList({ query, brandSlug, categorySlug }: { query?: string;
     // Construct the Prisma where clause based on the filters
     const whereClause: any = {};
 
+    // Fetch site settings for WhatsApp number
+    const settings = await prisma.settings.findUnique({
+        where: { id: "site-settings" },
+    });
+    const whatsappNumber = settings?.whatsapp || settings?.phone || undefined;
+
     if (query) {
         whereClause.OR = [
             { name: { contains: query, mode: "insensitive" } },
@@ -143,7 +149,7 @@ async function ProductList({ query, brandSlug, categorySlug }: { query?: string;
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard key={product.id} product={product} whatsappNumber={whatsappNumber} />
             ))}
         </div>
     );

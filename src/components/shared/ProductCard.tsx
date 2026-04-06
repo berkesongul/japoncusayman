@@ -19,9 +19,10 @@ interface ProductCardProps {
         brand?: { name: string } | null;
         model?: { name: string } | null;
     };
+    whatsappNumber?: string;
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, whatsappNumber }: ProductCardProps) {
     // Use a placeholder if no image exists
     const imageUrl = product.imageUrl || "/placeholder-part.jpg";
 
@@ -91,6 +92,7 @@ export function ProductCard({ product }: ProductCardProps) {
                     <WhatsAppButton
                         productName={product.name}
                         oemCode={product.oemCode}
+                        phoneNumber={whatsappNumber}
                         fullWidth
                     />
                 </CardFooter>

@@ -235,7 +235,7 @@ export default async function Home() {
         <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {latestProducts.map((product) => (
             <StaggerItem key={product.id}>
-              <ProductCard product={product} />
+              <ProductCard product={product} whatsappNumber={settings?.whatsapp || settings?.phone || undefined} />
             </StaggerItem>
           ))}
         </StaggerContainer>

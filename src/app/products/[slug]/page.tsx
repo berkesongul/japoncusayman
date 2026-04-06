@@ -38,6 +38,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
         notFound();
     }
 
+    // Fetch site settings for WhatsApp number
+    const settings = await prisma.settings.findUnique({
+        where: { id: "site-settings" },
+    });
+
     // Related products from the same model or brand
     const relatedProducts = await prisma.product.findMany({
         where: {
@@ -169,6 +174,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                         <WhatsAppButton
                             productName={product.name}
                             oemCode={product.oemCode}
+                            phoneNumber={settings?.whatsapp || settings?.phone || undefined}
                             className="flex-1 py-6 text-lg rounded-xl"
                         />
                         <Link
