@@ -80,6 +80,12 @@ export function Navbar() {
                         >
                             İletişim
                         </Link>
+                        <Link
+                            href="/sss"
+                            className="flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                        >
+                            S.S.S.
+                        </Link>
                     </nav>
                 </div>
 
@@ -185,6 +191,13 @@ export function Navbar() {
                                     className="flex items-center px-4 py-3.5 text-base font-semibold text-foreground hover:bg-muted hover:text-primary rounded-lg transition-colors border border-transparent hover:border-border"
                                 >
                                     İletişim
+                                </Link>
+                                <Link
+                                    href="/sss"
+                                    onClick={() => setIsOpen(false)}
+                                    className="flex items-center px-4 py-3.5 text-base font-semibold text-foreground hover:bg-muted hover:text-primary rounded-lg transition-colors border border-transparent hover:border-border"
+                                >
+                                    S.S.S.
                                 </Link>
                             </nav>
                         </SheetContent>
