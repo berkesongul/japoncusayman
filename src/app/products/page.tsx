@@ -106,7 +106,9 @@ export default async function ProductsPage(props: {
 
 async function ProductList({ query, brandSlug, categorySlug }: { query?: string; brandSlug?: string; categorySlug?: string }) {
     // Construct the Prisma where clause based on the filters
-    const whereClause: any = {};
+    const whereClause: any = {
+        isDeleted: false
+    };
 
     // Fetch site settings for WhatsApp number
     const settings = await prisma.settings.findUnique({

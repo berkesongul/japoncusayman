@@ -11,10 +11,11 @@ export const metadata = {
 
 export default async function DashboardPage() {
     const [productCount, brandCount, modelCount, recentProducts] = await Promise.all([
-        prisma.product.count(),
+        prisma.product.count({ where: { isDeleted: false } }),
         prisma.brand.count(),
         prisma.carModel.count(),
         prisma.product.findMany({
+            where: { isDeleted: false },
             take: 5,
             orderBy: { createdAt: "desc" },
             include: { brand: true, model: true },

@@ -79,8 +79,12 @@ model Product {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+
   @@index([oemCode])
   @@index([slug])
+  @@index([isDeleted])
 }
 
 model Settings {

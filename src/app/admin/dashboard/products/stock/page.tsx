@@ -18,6 +18,7 @@ async function updateStock(formData: FormData) {
 
 export default async function StockPage() {
     const products = await prisma.product.findMany({
+        where: { isDeleted: false },
         include: { brand: true },
         orderBy: { name: "asc" },
     });

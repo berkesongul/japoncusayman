@@ -100,12 +100,17 @@ export async function DELETE(
         });
 
         if (!existingProduct) return NextResponse.json({ error: "Product not found" }, { status: 404 });
+        if (existingProduct.isDeleted) return NextResponse.json({ error: "Product already in trash" }, { status: 400 });
 
-        await prisma.product.delete({
-            where: { id: existingProduct.id }
+        await prisma.product.update({
+            where: { id: existingProduct.id },
+            data: { 
+                isDeleted: true,
+                deletedAt: new Date()
+            }
         });
 
-        return NextResponse.json({ success: true });
+        return NextResponse.json({ success: true, message: "Product moved to trash" });
     } catch (error) {
         console.error("Product DELETE Error:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

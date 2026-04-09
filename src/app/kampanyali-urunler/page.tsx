@@ -55,7 +55,8 @@ export default async function CampaignProductsPage(props: {
 async function CampaignProductList({ query }: { query?: string }) {
     // Only search where isCampaign is true
     const whereClause: any = {
-        isCampaign: true
+        isCampaign: true,
+        isDeleted: false
     };
 
     // Fetch site settings for WhatsApp number

@@ -34,6 +34,7 @@ export const metadata: Metadata = {
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { WhatsAppWidget } from "@/components/layout/WhatsAppWidget";
 import { ProductSearchWidget } from "@/components/layout/ProductSearchWidget";
+import { Toaster } from "sonner";
 
 export default function RootLayout({
   children,
@@ -53,6 +54,7 @@ export default function RootLayout({
           <Footer />
           <WhatsAppWidget />
           <ProductSearchWidget />
+          <Toaster position="top-right" expand={false} richColors />
         </AuthProvider>
       </body>
     </html>

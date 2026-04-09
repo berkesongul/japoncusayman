@@ -6,6 +6,7 @@ import { slugify } from "@/lib/utils";
 export async function GET() {
     try {
         const products = await prisma.product.findMany({
+            where: { isDeleted: false },
             include: {
                 brand: true,
                 model: true,

@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 export default async function ProductPage({ params }: ProductPageProps) {
     const resolvedParams = await params;
     const product = await prisma.product.findUnique({
-        where: { slug: resolvedParams.slug },
+        where: { slug: resolvedParams.slug, isDeleted: false },
         include: { brand: true, model: true, category: true },
     });
 

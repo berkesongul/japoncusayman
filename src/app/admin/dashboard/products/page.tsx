@@ -15,6 +15,7 @@ export const metadata = {
 
 export default async function AdminProductsPage() {
     const products = await prisma.product.findMany({
+        where: { isDeleted: false },
         include: {
             brand: true,
             model: true,

@@ -8,7 +8,7 @@ export function DeleteProductButton({ productId, productName }: { productId: str
     const router = useRouter();
 
     const handleDelete = async () => {
-        if (!confirm(`"${productName}" ürünü silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`)) {
+        if (!confirm(`"${productName}" isimli ürünü çöp kutusuna taşımak istediğinize emin misiniz?`)) {
             return;
         }
 
@@ -30,10 +30,10 @@ export function DeleteProductButton({ productId, productName }: { productId: str
 
     return (
         <DropdownMenuItem
-            className="text-destructive focus:bg-destructive/10 cursor-pointer"
+            className="text-destructive focus:bg-destructive/10 cursor-pointer font-medium"
             onClick={handleDelete}
         >
-            <Trash2 className="mr-2 h-4 w-4" /> Sil
+            <Trash2 className="mr-2 h-4 w-4" /> Çöp Kutusuna Taşı
         </DropdownMenuItem>
     );
 }

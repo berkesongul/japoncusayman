@@ -12,6 +12,7 @@ export default async function Home() {
   // Fetch latest products and brands concurrently
   const [latestProducts, featuredBrands, settings] = await Promise.all([
     prisma.product.findMany({
+      where: { isDeleted: false },
       take: 8,
       orderBy: { createdAt: "desc" },
       include: { brand: true, model: true },
