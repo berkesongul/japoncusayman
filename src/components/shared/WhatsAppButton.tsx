@@ -12,7 +12,7 @@ interface WhatsAppButtonProps {
     fullWidth?: boolean;
 }
 
-// Client-side cache to avoid redundant fetches for multiple cards on same page
+// Client-side cache to avoid redundant fetches for multiple cPards on same page
 let cachedWhatsAppNumber: string | null = null;
 
 export function WhatsAppButton({
