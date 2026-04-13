@@ -47,7 +47,9 @@ RUN mkdir -p public/uploads && chown nextjs:nodejs public/uploads
 # Sadece standalone derleme dosyalarını kopyala
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-# Prisma client veya migrations gibi ekstralar lazımsa kopyalanabilir fakat standalone içine genelde dahil olur.
+# Prisma şema ve konfigürasyonunu kopyala (migration/push için)
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./
 
 USER nextjs
 
