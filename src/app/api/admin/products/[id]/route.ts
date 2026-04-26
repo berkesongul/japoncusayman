@@ -8,6 +8,9 @@ export async function GET(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const session = await getServerSession();
+        if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
         const { id } = await params;
         const product = await prisma.product.findFirst({
             where: {

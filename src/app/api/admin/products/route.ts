@@ -5,6 +5,9 @@ import { slugify } from "@/lib/utils";
 
 export async function GET() {
     try {
+        const session = await getServerSession();
+        if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
         const products = await prisma.product.findMany({
             where: { isDeleted: false },
             include: {

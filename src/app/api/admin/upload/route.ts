@@ -22,6 +22,11 @@ export async function POST(req: Request) {
         // Create a unique filename
         let filename = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
 
+        // Güvenlik: Sadece resim dosyalarına izin ver (SVG hariç, XSS engelleme amaçlı)
+        if (!file.type.startsWith("image/") || file.type.includes("svg")) {
+            return NextResponse.json({ error: "Sadece resim formatlarına izin verilir (SVG hariç)." }, { status: 400 });
+        }
+
         if (file.type.startsWith("image/") && !file.type.includes("svg")) {
             // Change extension to .webp
             const lastDotIndex = filename.lastIndexOf(".");
