@@ -67,7 +67,7 @@ export default async function IletisimPage() {
                 <div className="space-y-4">
                     <Card>
                         <CardContent className="flex items-start gap-4 p-6">
-                            <div className="bg-primary/10 p-3 rounded-xl shrink-0">
+                            <div className="shrink-0">
                                 <MapPin className="h-6 w-6 text-primary" />
                             </div>
                             <div>
@@ -81,7 +81,7 @@ export default async function IletisimPage() {
 
                     <Card>
                         <CardContent className="flex items-start gap-4 p-6">
-                            <div className="bg-primary/10 p-3 rounded-xl shrink-0">
+                            <div className="shrink-0">
                                 <Phone className="h-6 w-6 text-primary" />
                             </div>
                             <div>
@@ -109,7 +109,7 @@ export default async function IletisimPage() {
                     {contactInfo.instagram && (
                         <Card>
                             <CardContent className="flex items-start gap-4 p-6">
-                                <div className="bg-primary/10 p-3 rounded-xl shrink-0">
+                                <div className="shrink-0">
                                     <svg className="h-6 w-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                         <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                                         <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
@@ -133,7 +133,7 @@ export default async function IletisimPage() {
 
                     <Card>
                         <CardContent className="flex items-start gap-4 p-6">
-                            <div className="bg-primary/10 p-3 rounded-xl shrink-0">
+                            <div className="shrink-0">
                                 <Mail className="h-6 w-6 text-primary" />
                             </div>
                             <div>
@@ -150,7 +150,7 @@ export default async function IletisimPage() {
 
                     <Card>
                         <CardContent className="flex items-start gap-4 p-6">
-                            <div className="bg-primary/10 p-3 rounded-xl shrink-0">
+                            <div className="shrink-0">
                                 <Clock className="h-6 w-6 text-primary" />
                             </div>
                             <div>

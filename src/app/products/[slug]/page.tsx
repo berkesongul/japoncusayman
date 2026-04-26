@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { Badge } from "@/components/ui/badge";
 import { WhatsAppButton } from "@/components/shared/WhatsAppButton";
 import { ContactCorporateSection } from "@/components/shared/ContactCorporateSection";
+import { ProductImageZoom } from "@/components/shared/ProductImageZoom";
 import { Metadata } from "next";
 
 interface ProductPageProps {
@@ -80,16 +81,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 {/* Left: Product Image */}
                 <div className="bg-muted rounded-2xl aspect-square flex items-center justify-center overflow-hidden border">
                     {product.imageUrl ? (
-                        <div className="relative w-full h-full">
-                            <Image
-                                src={product.imageUrl}
-                                alt={product.name}
-                                fill
-                                className="object-contain p-8"
-                                sizes="(max-width: 768px) 100vw, 50vw"
-                                priority
-                            />
-                        </div>
+                        <ProductImageZoom imageUrl={product.imageUrl} altText={product.name} />
                     ) : (
                         <div className="flex flex-col items-center justify-center text-muted-foreground p-12">
                             <span className="font-medium text-lg">Görsel Bulunmuyor</span>
