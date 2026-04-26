@@ -11,7 +11,14 @@ export const authOptions: NextAuthOptions = {
                 email: { label: "Email", type: "email", placeholder: "admin@japoncusayman.com" },
                 password: { label: "Password", type: "password" }
             },
-            async authorize(credentials) {
+            async authorize(credentials, req) {
+                const ip = (req?.headers as any)?.["x-forwarded-for"] || "127.0.0.1";
+                const { rateLimit } = await import("@/lib/rate-limit");
+                
+                if (!rateLimit(ip, "login", 5, 60000).success) {
+                    throw new Error("Çok fazla giriş denemesi. Lütfen 1 dakika bekleyin.");
+                }
+
                 if (!credentials?.email || !credentials?.password) {
                     throw new Error("Geçerli bir E-posta ve Şifre girin.");
                 }

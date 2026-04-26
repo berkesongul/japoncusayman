@@ -25,6 +25,18 @@ export default async function ProductsPage(props: {
         prisma.category.findMany({ orderBy: { name: "asc" } }),
     ]);
 
+    // Rate limit check using headers
+    const { headers } = await import("next/headers");
+    const headersList = await headers();
+    const ip = headersList.get("x-forwarded-for") || "127.0.0.1";
+    
+    // Yalnızca arama için limit (sayfaya girilen)
+    const { rateLimit } = await import("@/lib/rate-limit");
+    if (!rateLimit(ip, "products", 20, 60000).success) {
+        const { redirect } = await import("next/navigation");
+        redirect("/too-many-requests");
+    }
+
     return (
         <div className="container mx-auto px-4 py-8 max-w-7xl">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
