@@ -15,13 +15,15 @@ import {
     Settings,
     Warehouse,
     FolderTree,
-    Trash2
+    Trash2,
+    BookOpen
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
     { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+    { name: "Veresiye Defteri", href: "/admin/dashboard/veresiye", icon: BookOpen },
     { name: "Ürünler", href: "/admin/dashboard/products", icon: Package },
     { name: "Kategoriler", href: "/admin/dashboard/categories", icon: FolderTree },
     { name: "Stok Yönetimi", href: "/admin/dashboard/products/stock", icon: BarChart2 },

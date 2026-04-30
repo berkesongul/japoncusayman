@@ -111,3 +111,32 @@ model InternalStock {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model Customer {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String?
+  address   String?  @db.Text
+  notes     String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  transactions CustomerTransaction[]
+}
+
+enum TransactionType {
+  DEBT
+  PAYMENT
+}
+
+model CustomerTransaction {
+  id          String   @id @default(cuid())
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  type        TransactionType
+  amount      Float
+  description String?  @db.Text
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
