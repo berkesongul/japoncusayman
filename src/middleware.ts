@@ -6,7 +6,7 @@ import { rateLimit } from "./lib/rate-limit";
 export async function middleware(req: NextRequest) {
     // 1. İstemci IP Adresi Bulma
     // Gerçek bir Nginx reverse proxy arkasında IP tespiti için x-forwarded-for kullanılır.
-    const ip = req.headers.get("x-forwarded-for") || req.ip || "127.0.0.1";
+    const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
     const path = req.nextUrl.pathname;
 
     // Rate limit, Edge runtime'da (middleware'de) RAM tutulamadığı için 
