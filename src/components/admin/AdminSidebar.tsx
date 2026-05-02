@@ -16,7 +16,8 @@ import {
     Warehouse,
     FolderTree,
     Trash2,
-    BookOpen
+    BookOpen,
+    Printer
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,7 @@ const navItems = [
     { name: "Çöp Kutusu", href: "/admin/dashboard/trash", icon: Trash2 },
     { name: "Markalar", href: "/admin/dashboard/brands", icon: Tags },
     { name: "Modeller", href: "/admin/dashboard/models", icon: Car },
+    { name: "Barkod & Etiket", href: "/admin/dashboard/barcode", icon: Printer },
     { name: "Ayarlar", href: "/admin/dashboard/settings", icon: Settings },
 ];
 
