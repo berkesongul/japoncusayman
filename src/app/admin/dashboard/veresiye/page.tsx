@@ -16,6 +16,9 @@ export default async function VeresiyePage() {
     });
 
     // Calculate balances
+    let globalTotalDebt = 0;
+    let globalTotalPayment = 0;
+
     const customersWithBalance = customers.map(customer => {
         const totalDebt = customer.transactions
             .filter(t => t.type === 'DEBT')
@@ -24,13 +27,16 @@ export default async function VeresiyePage() {
             .filter(t => t.type === 'PAYMENT')
             .reduce((sum, t) => sum + t.amount, 0);
         
+        globalTotalDebt += totalDebt;
+        globalTotalPayment += totalPayment;
+
         return {
             ...customer,
             balance: totalDebt - totalPayment
         };
     });
 
-    const totalReceivables = customersWithBalance.reduce((sum, c) => sum + c.balance, 0);
+    const totalReceivables = globalTotalDebt - globalTotalPayment;
 
     return (
         <div className="space-y-6">
@@ -48,26 +54,52 @@ export default async function VeresiyePage() {
                 </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
                             <Users className="h-6 w-6" />
                         </div>
                         <div>
                             <p className="text-sm font-medium text-slate-500">Toplam Müşteri</p>
-                            <h3 className="text-2xl font-bold text-slate-900">{customers.length}</h3>
+                            <h3 className="text-xl font-bold text-slate-900">{customers.length}</h3>
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-rose-100 rounded-lg flex items-center justify-center text-rose-600">
+                            <div className="font-bold text-xl">+</div>
+                        </div>
+                        <div>
+                            <p className="text-sm font-medium text-slate-500">Toplam Borç (Satış)</p>
+                            <h3 className="text-xl font-bold text-rose-600">
+                                ₺{globalTotalDebt.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center text-emerald-600">
+                            <div className="font-bold text-xl">-</div>
+                        </div>
+                        <div>
+                            <p className="text-sm font-medium text-slate-500">Toplam Ödeme</p>
+                            <h3 className="text-xl font-bold text-emerald-600">
+                                ₺{globalTotalPayment.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-600">
                             <div className="font-bold text-xl">₺</div>
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-slate-500">Toplam Alacak (Açık Hesap)</p>
-                            <h3 className="text-2xl font-bold text-slate-900">
+                            <p className="text-sm font-medium text-slate-500">Açık Hesap (Bakiye)</p>
+                            <h3 className="text-xl font-bold text-slate-900">
                                 ₺{totalReceivables.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
                             </h3>
                         </div>
