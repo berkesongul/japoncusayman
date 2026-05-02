@@ -33,6 +33,7 @@ export default function MusteriDetayPage({ params }: { params: Promise<{ id: str
 
     // Transaction Form State
     const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
+    const [editingTransactionId, setEditingTransactionId] = useState<string | null>(null);
     const [transactionType, setTransactionType] = useState<'DEBT' | 'PAYMENT'>('DEBT');
     const [txAmount, setTxAmount] = useState("");
     const [txDesc, setTxDesc] = useState("");
@@ -67,8 +68,13 @@ export default function MusteriDetayPage({ params }: { params: Promise<{ id: str
 
         setSubmitting(true);
         try {
-            const res = await fetch(`/api/admin/veresiye/customers/${id}/transactions`, {
-                method: "POST",
+            const url = editingTransactionId 
+                ? `/api/admin/veresiye/transactions/${editingTransactionId}`
+                : `/api/admin/veresiye/customers/${id}/transactions`;
+            const method = editingTransactionId ? "PUT" : "POST";
+
+            const res = await fetch(url, {
+                method,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     type: transactionType,
@@ -81,6 +87,7 @@ export default function MusteriDetayPage({ params }: { params: Promise<{ id: str
             if (!res.ok) throw new Error("İşlem kaydedilemedi");
             
             setIsTransactionModalOpen(false);
+            setEditingTransactionId(null);
             setTxAmount("");
             setTxDesc("");
             setTxDate(getLocalDatetime());
@@ -91,6 +98,29 @@ export default function MusteriDetayPage({ params }: { params: Promise<{ id: str
         } finally {
             setSubmitting(false);
         }
+    };
+
+    const openEditModal = (t: Transaction) => {
+        setEditingTransactionId(t.id);
+        setTransactionType(t.type);
+        setTxAmount(t.amount.toString());
+        setTxDesc(t.description || "");
+        
+        // format date for datetime-local
+        const d = new Date(t.date);
+        d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+        setTxDate(d.toISOString().slice(0, 16));
+        
+        setIsTransactionModalOpen(true);
+    };
+
+    const openAddModal = (type: 'DEBT' | 'PAYMENT') => {
+        setEditingTransactionId(null);
+        setTransactionType(type);
+        setTxAmount("");
+        setTxDesc("");
+        setTxDate(getLocalDatetime());
+        setIsTransactionModalOpen(true);
     };
 
     const handleDeleteCustomer = async () => {
@@ -176,13 +206,13 @@ export default function MusteriDetayPage({ params }: { params: Promise<{ id: str
                         <h3 className="font-semibold text-slate-900">Hesap Hareketleri</h3>
                         <div className="flex gap-2 w-full sm:w-auto">
                             <Button 
-                                onClick={() => { setTransactionType('DEBT'); setIsTransactionModalOpen(true); }}
+                                onClick={() => openAddModal('DEBT')}
                                 className="flex-1 sm:flex-none bg-rose-600 hover:bg-rose-700 text-white"
                             >
                                 <Plus className="h-4 w-4 mr-1" /> Borç Yaz
                             </Button>
                             <Button 
-                                onClick={() => { setTransactionType('PAYMENT'); setIsTransactionModalOpen(true); }}
+                                onClick={() => openAddModal('PAYMENT')}
                                 className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white"
                             >
                                 <Minus className="h-4 w-4 mr-1" /> Ödeme Al
@@ -199,12 +229,13 @@ export default function MusteriDetayPage({ params }: { params: Promise<{ id: str
                                         <th className="py-3 px-4 text-xs font-semibold text-slate-600 uppercase tracking-wider">Açıklama</th>
                                         <th className="py-3 px-4 text-xs font-semibold text-slate-600 uppercase tracking-wider text-right">Borç (Satış)</th>
                                         <th className="py-3 px-4 text-xs font-semibold text-slate-600 uppercase tracking-wider text-right">Alacak (Ödeme)</th>
+                                        <th className="py-3 px-4 text-xs font-semibold text-slate-600 uppercase tracking-wider text-right w-20">İşlemler</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100">
                                     {customer.transactions.length === 0 ? (
                                         <tr>
-                                            <td colSpan={4} className="py-8 text-center text-slate-500 text-sm">
+                                            <td colSpan={5} className="py-8 text-center text-slate-500 text-sm">
                                                 Henüz hesap hareketi bulunmuyor.
                                             </td>
                                         </tr>
@@ -223,6 +254,15 @@ export default function MusteriDetayPage({ params }: { params: Promise<{ id: str
                                                 <td className="py-3 px-4 text-sm text-right font-medium text-emerald-600">
                                                     {t.type === 'PAYMENT' ? `${t.amount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺` : ''}
                                                 </td>
+                                                <td className="py-3 px-4 text-right">
+                                                    <button
+                                                        onClick={() => openEditModal(t)}
+                                                        className="text-slate-400 hover:text-blue-600 transition-colors p-1"
+                                                        title="Düzenle"
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                                                    </button>
+                                                </td>
                                             </tr>
                                         ))
                                     )}
@@ -239,7 +279,9 @@ export default function MusteriDetayPage({ params }: { params: Promise<{ id: str
                     <div className="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden">
                         <div className={`p-4 ${transactionType === 'DEBT' ? 'bg-rose-50 border-b border-rose-100' : 'bg-emerald-50 border-b border-emerald-100'}`}>
                             <h3 className={`text-lg font-bold ${transactionType === 'DEBT' ? 'text-rose-700' : 'text-emerald-700'}`}>
-                                {transactionType === 'DEBT' ? 'Yeni Borç / Satış Ekle' : 'Tahsilat / Ödeme Al'}
+                                {editingTransactionId 
+                                    ? (transactionType === 'DEBT' ? 'Borç / Satış Düzenle' : 'Tahsilat / Ödeme Düzenle') 
+                                    : (transactionType === 'DEBT' ? 'Yeni Borç / Satış Ekle' : 'Tahsilat / Ödeme Al')}
                             </h3>
                         </div>
                         <form onSubmit={handleAddTransaction} className="p-6 space-y-4">
@@ -277,7 +319,7 @@ export default function MusteriDetayPage({ params }: { params: Promise<{ id: str
                                 />
                             </div>
                             <div className="pt-4 flex justify-end gap-3">
-                                <Button type="button" variant="outline" onClick={() => setIsTransactionModalOpen(false)}>İptal</Button>
+                                <Button type="button" variant="outline" onClick={() => { setIsTransactionModalOpen(false); setEditingTransactionId(null); }}>İptal</Button>
                                 <Button type="submit" disabled={submitting} className={transactionType === 'DEBT' ? 'bg-rose-600 hover:bg-rose-700' : 'bg-emerald-600 hover:bg-emerald-700'}>
                                     {submitting ? "Kaydediliyor..." : "Kaydet"}
                                 </Button>
