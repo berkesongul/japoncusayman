@@ -80,7 +80,7 @@ export default function MusteriDetayPage({ params }: { params: Promise<{ id: str
                     type: transactionType,
                     amount: Number(txAmount),
                     description: txDesc,
-                    date: txDate
+                    date: new Date(txDate).toISOString()
                 })
             });
 
@@ -121,6 +121,22 @@ export default function MusteriDetayPage({ params }: { params: Promise<{ id: str
         setTxDesc("");
         setTxDate(getLocalDatetime());
         setIsTransactionModalOpen(true);
+    };
+
+    const handleDeleteTransaction = async (transactionId: string) => {
+        if (!confirm("Bu hesap hareketini silmek istediğinize emin misiniz? Bu işlem geri alınamaz!")) return;
+
+        try {
+            const res = await fetch(`/api/admin/veresiye/transactions/${transactionId}`, {
+                method: "DELETE"
+            });
+            if (!res.ok) throw new Error("İşlem silinemedi");
+            
+            fetchCustomer(); // Refresh data
+            router.refresh();
+        } catch (err: any) {
+            alert(err.message);
+        }
     };
 
     const handleDeleteCustomer = async () => {
@@ -255,13 +271,22 @@ export default function MusteriDetayPage({ params }: { params: Promise<{ id: str
                                                     {t.type === 'PAYMENT' ? `${t.amount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} ₺` : ''}
                                                 </td>
                                                 <td className="py-3 px-4 text-right">
-                                                    <button
-                                                        onClick={() => openEditModal(t)}
-                                                        className="text-slate-400 hover:text-blue-600 transition-colors p-1"
-                                                        title="Düzenle"
-                                                    >
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
-                                                    </button>
+                                                    <div className="flex justify-end items-center gap-2">
+                                                        <button
+                                                            onClick={() => openEditModal(t)}
+                                                            className="text-slate-400 hover:text-blue-600 transition-colors p-1"
+                                                            title="Düzenle"
+                                                        >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDeleteTransaction(t.id)}
+                                                            className="text-slate-400 hover:text-rose-600 transition-colors p-1"
+                                                            title="Sil"
+                                                        >
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))

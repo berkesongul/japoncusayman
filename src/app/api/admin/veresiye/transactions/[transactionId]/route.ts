@@ -34,3 +34,23 @@ export async function PUT(
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
+
+export async function DELETE(
+    req: Request,
+    { params }: { params: Promise<{ transactionId: string }> }
+) {
+    try {
+        const { transactionId } = await params;
+        const session = await getServerSession();
+        if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+        await prisma.customerTransaction.delete({
+            where: { id: transactionId }
+        });
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error("Transaction DELETE Error:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}
